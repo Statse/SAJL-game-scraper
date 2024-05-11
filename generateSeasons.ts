@@ -2,12 +2,13 @@ import fs from 'fs';
 import path from 'path';
 
 import playwright from 'playwright';
+import { gameLinks } from './seasons/gameLinks';
 import { gameParser } from './gameParser';
 
 export const baseLegacyStatsUrl = "http://www.sajl.org/selaus/otteluohjelma.php?sarja=1&kausi="
-// export const legacyFirstSeason = 2003
+
 const legacyFirstSeason = 2012
-export const legacyLastSeason = 2022
+const legacyLastSeason = 2022
 
 type GameLinks = {
     [key: string]: string[];
@@ -46,4 +47,23 @@ const generateJSONfromLegacyStats = async () => {
     }
 }
 
-generateJSONfromLegacyStats()
+const generateGameData = async () => {
+
+    const keys = Object.keys(gameLinks);
+
+    keys.forEach(async (key) => {
+        gameLinks["2012"].forEach(async (link, index) => {
+            const game = await gameParser(link);
+            const dir = `./seasons/${key}`;
+            fs.mkdirSync(dir, { recursive: true });
+            const fileName = path.join(dir, `${index}.ts`);
+            //save into json
+            fs.writeFileSync(fileName, JSON.stringify(game));
+            // fs.writeFileSync(fileName, `export const game = ${JSON.stringify(game)}`);
+        });
+    });
+}
+
+
+// generateJSONfromLegacyStats()
+// generateGameData()
