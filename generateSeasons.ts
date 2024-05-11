@@ -51,19 +51,31 @@ const generateGameData = async () => {
 
     const keys = Object.keys(gameLinks);
 
-    keys.forEach(async (key) => {
-        gameLinks["2012"].forEach(async (link, index) => {
+
+
+
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+
+        //@ts-ignore
+        const links = gameLinks[key] as string[];
+
+        console.log(key, ": ", links)
+
+        for (let index = 0; index < links.length; index++) {
+            const link = links[index];
+            console.log("link:", link)
             const game = await gameParser(link);
             const dir = `./seasons/${key}`;
             fs.mkdirSync(dir, { recursive: true });
-            const fileName = path.join(dir, `${index}.ts`);
-            //save into json
-            fs.writeFileSync(fileName, JSON.stringify(game));
-            // fs.writeFileSync(fileName, `export const game = ${JSON.stringify(game)}`);
-        });
-    });
+
+            const fileName = game?.title?.replace(/\s+/g, "_").replace(",", "").replace(/\\|\/|:|\*|\?|"|<|>|\||\(/g, "_") || index.toString();
+
+            const filePath = path.join(dir, `${fileName}.ts`);
+            fs.writeFileSync(filePath, `export const game = ${JSON.stringify(game)}`);
+        }
+    }
 }
 
-
 // generateJSONfromLegacyStats()
-// generateGameData()
+generateGameData()

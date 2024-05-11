@@ -4,3 +4,4 @@ gameData.json
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/seasons/**/*
